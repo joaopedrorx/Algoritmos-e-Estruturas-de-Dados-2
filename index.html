@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Produtos</title>
+</head>
+<body>
+
+    <h1>Gestão de Produtos</h1>
+    <p>Abra o console do desenvolvedor (F12) para ver a execução do programa.</p>
+
+    <script>
+        const produtos = [];
+        const LIMITE_PRODUTOS = 50;
+
+        function incluir_produto() {
+            if (produtos.length >= LIMITE_PRODUTOS) {
+                alert(`Erro: Limite de ${LIMITE_PRODUTOS} produtos atingido. Não é possível adicionar mais.`);
+                return;
+            }
+
+            const nome = prompt("Nome do produto:");
+            if (!nome) {
+                alert("Erro: O nome não pode ser vazio.");
+                return;
+            }
+
+            const preco = parseFloat(prompt("Preço unitário (R$):"));
+            if (isNaN(preco) || preco < 0) {
+                alert("Erro: Preço inválido.");
+                return;
+            }
+
+            const quantidade = parseInt(prompt("Quantidade em estoque:"));
+            if (isNaN(quantidade) || quantidade < 0) {
+                alert("Erro: Quantidade inválida.");
+                return;
+            }
+
+            const novo_produto = {
+                nome: nome,
+                preco: preco,
+                quantidade: quantidade
+            };
+            produtos.push(novo_produto);
+            alert(`Produto '${nome}' adicionado com sucesso!`);
+        }
+
+        function listar_produtos() {
+            if (produtos.length === 0) {
+                alert("Nenhum produto cadastrado.");
+                return;
+            }
+
+            let lista = `Total de produtos: ${produtos.length} / ${LIMITE_PRODUTOS}\n--------------------\n`;
+            for (let i = 0; i < produtos.length; i++) {
+                const p = produtos[i];
+                lista += `Produto ${i + 1}:\n`;
+                lista += `  Nome:       ${p.nome}\n`;
+                lista += `  Preço:      R$ ${p.preco.toFixed(2)}\n`;
+                lista += `  Quantidade: ${p.quantidade} un.\n`;
+                lista += "--------------------\n";
+            }
+            alert(lista);
+        }
+
+        function remover_produto() {
+            if (produtos.length === 0) {
+                alert("Nenhum produto cadastrado para remover.");
+                return;
+            }
+
+            const nome_remover = prompt("Digite o nome exato do produto a ser removido:");
+            let indice_encontrado = -1;
+
+            for (let i = 0; i < produtos.length; i++) {
+                if (produtos[i].nome.toLowerCase() === nome_remover.toLowerCase()) {
+                    indice_encontrado = i;
+                    break;
+                }
+            }
+
+            if (indice_encontrado !== -1) {
+                const produto_encontrado = produtos[indice_encontrado];
+                const confirmar = confirm(`Produto encontrado: ${produto_encontrado.nome} (Preço: R$ ${produto_encontrado.preco.toFixed(2)})\nTem certeza que deseja remover este produto?`);
+
+                if (confirmar) {
+                    produtos.splice(indice_encontrado, 1);
+                    alert(`Produto '${nome_remover}' removido com sucesso.`);
+                } else {
+                    alert("Remoção cancelada.");
+                }
+            } else {
+                alert(`Erro: Produto com o nome '${nome_remover}' não encontrado.`);
+            }
+        }
+
+        function main() {
+            while (true) {
+                const opcao = prompt(
+                    "--- GERENCIADOR DE ESTOQUE ---\n" +
+                    "1 - Incluir novo produto\n" +
+                    "2 - Listar produtos cadastrados\n" +
+                    "3 - Remover produto\n" +
+                    "4 - Sair do programa\n" +
+                    "Escolha uma opção (1-4):"
+                );
+
+                if (opcao === '1') {
+                    incluir_produto();
+                } else if (opcao === '2') {
+                    listar_produtos();
+                } else if (opcao === '3') {
+                    remover_produto();
+                } else if (opcao === '4') {
+                    alert("Saindo do programa... Até logo!");
+                    break;
+                } else {
+                    alert("Opção inválida. Por favor, digite um número de 1 a 4.");
+                }
+            }
+        }
+
+        main();
+    </script>
+
+</body>
+</html>

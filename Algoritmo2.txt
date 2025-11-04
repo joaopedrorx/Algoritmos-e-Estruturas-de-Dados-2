@@ -1,0 +1,181 @@
+algoritmo "GerenciadorDeProdutosVisualG"
+// -----------------------------------------------------------------
+// --- ATENÇÃO ---
+// VisualG não pode salvar dados em arquivos externos.
+// Os produtos cadastrados serão perdidos ao fechar o programa.
+// -----------------------------------------------------------------
+
+// --- Definição do Registro (Struct) ---
+tipo
+   TProduto = registro
+      nome: caractere
+      preco: real
+      quantidade: inteiro
+   fimregistro
+
+// --- Seção de Variáveis Globais ---
+var
+   // O vetor com o limite fixo de 50 posições
+   listaProdutos: vetor[1..50] de TProduto
+   
+   // Variável para controlar quantos produtos *realmente* estão cadastrados
+   totalProdutos: inteiro
+   
+   // Variável para o menu
+   opcao: caractere
+
+// --- Procedimento para Incluir Produto ---
+procedimento IncluirProduto()
+var
+   novoProduto: TProduto
+inicio
+   // 1. Verifica se o vetor está cheio
+   Se (totalProdutos = 50) Entao
+      EscrevaL
+      EscrevaL("ERRO: Limite de 50 produtos atingido. Impossível adicionar.")
+      EscrevaL
+   Senao
+      // 2. Se não estiver cheio, incrementa o contador
+      totalProdutos <- totalProdutos + 1
+      
+      // 3. Lê os dados do novo produto
+      EscrevaL
+      EscrevaL("--- Inclusão de Novo Produto (", totalProdutos, "/50) ---")
+      Escreva("Digite o nome: ")
+      Leia(novoProduto.nome)
+      Escreva("Digite o preço (ex: 10.50): ")
+      Leia(novoProduto.preco)
+      Escreva("Digite a quantidade: ")
+      Leia(novoProduto.quantidade)
+      
+      // 4. Adiciona o novo produto na posição 'totalProdutos'
+      listaProdutos[totalProdutos] <- novoProduto
+      
+      EscrevaL
+      EscrevaL("Produto '", novoProduto.nome, "' cadastrado com sucesso!")
+   FimSe
+fimprocedimento
+
+// --- Procedimento para Listar Produtos ---
+procedimento ListarProdutos()
+var
+   i: inteiro
+inicio
+   EscrevaL
+   EscrevaL("--- Relação de Produtos Cadastrados ---")
+   
+   // 1. Verifica se há produtos
+   Se (totalProdutos = 0) Entao
+      EscrevaL("Nenhum produto cadastrado.")
+   Senao
+      // 2. Se houver, lista todos de 1 até o 'totalProdutos'
+      EscrevaL("Total de produtos: ", totalProdutos, "/50")
+      EscrevaL("-------------------------------------------")
+      Para i de 1 ate totalProdutos Faca
+         EscrevaL("Produto ", i, ":")
+         EscrevaL("  Nome:       ", listaProdutos[i].nome)
+         EscrevaL("  Preço:      R$ ", listaProdutos[i].preco:5:2) // Formata com 2 casas decimais
+         EscrevaL("  Quantidade: ", listaProdutos[i].quantidade, " un.")
+         EscrevaL("-------------------------------------------")
+      FimPara
+   FimSe
+fimprocedimento
+
+// --- Procedimento para Remover Produto ---
+procedimento RemoverProduto()
+var
+   nomeRemover: caractere
+   indiceEncontrado: inteiro
+   i: inteiro // Contador para os loops
+   encontrou: logico
+inicio
+   EscrevaL
+   EscrevaL("--- Remoção de Produto ---")
+
+   // 1. Verifica se há produtos para remover
+   Se (totalProdutos = 0) Entao
+      EscrevaL("Nenhum produto cadastrado para remover.")
+   Senao
+      // 2. Pede o nome
+      Escreva("Digite o nome exato do produto a ser removido: ")
+      Leia(nomeRemover)
+      
+      // 3. Procura o produto no vetor
+      encontrou <- falso
+      indiceEncontrado <- 0
+      
+      Para i de 1 ate totalProdutos Faca
+         Se (listaProdutos[i].nome = nomeRemover) Entao
+            encontrou <- verdadeiro
+            indiceEncontrado <- i
+            Interrompa // Para o loop assim que encontrar
+         FimSe
+      FimPara
+      
+      // 4. Se não encontrou, exibe erro
+      Se (encontrou = falso) Entao
+         EscrevaL("ERRO: Produto '", nomeRemover, "' não encontrado.")
+      Senao
+         // 5. Se encontrou, "puxa" todos os elementos seguintes
+         // para cobrir o espaço do item removido.
+         // Ex: Se removeu o índice 3, o 4 vira 3, o 5 vira 4, etc.
+         Para i de indiceEncontrado ate totalProdutos - 1 Faca
+            listaProdutos[i] <- listaProdutos[i+1]
+         FimPara
+         
+         // 6. Diminui o contador total
+         totalProdutos <- totalProdutos - 1
+         
+         EscrevaL("Produto '", nomeRemover, "' removido com sucesso.")
+      FimSe
+   FimSe
+fimprocedimento
+
+
+// --- Programa Principal (Menu) ---
+inicio
+   // Inicializa o contador de produtos em 0
+   totalProdutos <- 0
+   
+   // Loop principal do menu
+   Repita
+      EscrevaL
+      EscrevaL("==============================================")
+      EscrevaL("--- GERENCIADOR DE ESTOQUE (LIMITE: 50) ---")
+      EscrevaL("--- (Dados em memória - VisualG) ---")
+      EscrevaL("==============================================")
+      EscrevaL("1 - Incluir novo produto")
+      EscrevaL("2 - Listar produtos cadastrados")
+      EscrevaL("3 - Remover produto")
+      EscrevaL("4 - Sair do programa")
+      Escreva("Escolha uma opção (1-4): ")
+      Leia(opcao)
+      
+      // Limpa a tela para organizar a visualização
+      LimpaTela
+      
+      // Executa a ação escolhida
+      Escolha opcao
+         Caso "1"
+            IncluirProduto()
+         Caso "2"
+            ListarProdutos()
+         Caso "3"
+            RemoverProduto()
+         Caso "4"
+            EscrevaL("Saindo do programa...")
+         Caso Contrario
+            EscrevaL("Opção inválida. Tente novamente.")
+      FimEscolha
+      
+      // Pausa antes de mostrar o menu novamente (exceto ao sair)
+      Se (opcao <> "4") Entao
+         EscrevaL
+         Escreva("Pressione ENTER para continuar...")
+         Leia() // Funciona como uma pausa
+         LimpaTela
+      FimSe
+      
+   Ate (opcao = "4") // Continua até o usuário digitar 4
+
+fimalgoritmo
