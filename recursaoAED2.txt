@@ -1,0 +1,46 @@
+algoritmo "ContarDigitosRecursivo"
+
+
+var
+   numeroLido: inteiro       // Variável para armazenar o número digitado pelo usuário
+   quantidadeDigitos: inteiro // Variável para armazenar o resultado da contagem
+
+// --- Função Recursiva para Contar os Dígitos ---
+// Esta função implementa a lógica vista no exemplo:
+// contar(1234) = 1 + contar(234)
+// O caso base é quando o número tem apenas um dígito (0-9).
+
+funcao ContarDigitos(n: inteiro) : inteiro
+var
+   numAbs: inteiro // Variável local para o valor absoluto
+inicio
+   // Usa o valor absoluto para tratar números negativos corretamente
+   // abs() retorna o valor absoluto de um número
+   numAbs <- abs(n)
+
+   // Caso Base: Se o número absoluto é menor que 10 (ou seja, de 0 a 9),
+   // ele tem apenas 1 dígito.
+   Se (numAbs < 10) Entao
+      retorne 1
+   // Passo Recursivo: Se for 10 ou mais,
+   // o número de dígitos é 1 + a contagem de dígitos do (número / 10).
+   Senao
+      // A barra invertida (\) faz a DIVISÃO INTEIRA
+      // Ex: 1234 \ 10 = 123
+      retorne 1 + ContarDigitos(numAbs \ 10)
+   FimSe
+fimfuncao
+
+// --- Programa Principal ---8
+inicio
+   // Solicita a entrada do usuário
+   Escreva("Digite um número inteiro (positivo ou negativo): ")
+   Leia(numeroLido)
+
+   // Chama a função recursiva para obter o resultado
+   quantidadeDigitos <- ContarDigitos(numeroLido)
+
+   // Exibe o resultado formatado
+   EscrevaL("O número ", numeroLido, " tem ", quantidadeDigitos, " dígito(s).")
+
+fimalgoritmo

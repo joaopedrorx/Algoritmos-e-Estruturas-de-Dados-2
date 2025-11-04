@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Contar Dígitos Recursivo</title>
+  <style>
+    body {
+      font-family: Segoe UI, Roboto, Arial, sans-serif;
+      max-width: 720px;
+      margin: 24px;
+      padding: 0
+    }
+
+    input {
+      padding: 6px 8px;
+      font-size: 16px
+    }
+
+    button {
+      padding: 6px 10px;
+      margin-left: 8px
+    }
+
+    #resultado {
+      margin-top: 16px;
+      font-weight: 600
+    }
+  </style>
+</head>
+
+<body>
+  <h2>Contar Dígitos (recursivo)</h2>
+  <p>Digite um número inteiro (positivo ou negativo). Suporta números grandes via <code>BigInt</code>.</p>
+
+  <label for="numero">Número:</label>
+  <input id="numero" type="text" placeholder="ex: -12345" />
+  <button id="btn">Contar dígitos</button>
+
+  <p id="resultado" aria-live="polite"></p>
+
+  <script>
+    // Função recursiva para Number
+    function contarDigitosNumber(n) {
+      const numAbs = Math.abs(n);
+      if (numAbs < 10) return 1;
+      return 1 + contarDigitosNumber(Math.floor(numAbs / 10));
+    }
+
+    // Função recursiva para BigInt
+    function contarDigitosBigInt(n) {
+      const numAbs = n < 0n ? -n : n;
+      if (numAbs < 10n) return 1;
+      return 1 + contarDigitosBigInt(numAbs / 10n);
+    }
+
+    document.getElementById('btn').addEventListener('click', () => {
+      const input = document.getElementById('numero');
+      const out = document.getElementById('resultado');
+      const val = input.value.trim();
+
+      if (val === '') {
+        out.textContent = 'Por favor, digite um número inteiro.';
+        return;
+      }
+
+      // Se for apenas dígitos com sinal opcional, usamos BigInt (mantém precisão para números muito grandes)
+      if (/^[-+]?\d+$/.test(val)) {
+        try {
+          const n = BigInt(val);
+          const qtd = contarDigitosBigInt(n);
+          out.textContent = `O número ${val} tem ${qtd} dígito(s).`;
+        } catch (e) {
+          out.textContent = 'Erro ao processar o número (BigInt não suportado neste ambiente).';
+        }
+        return;
+      }
+
+      // Caso contrário, tentar parse como Number (rejeita floats/inválidos)
+      const num = Number(val);
+      if (!Number.isFinite(num) || !Number.isInteger(num)) {
+        out.textContent = 'Entrada inválida: informe um número inteiro (sem casas decimais).';
+        return;
+      }
+
+      const qtd = contarDigitosNumber(num);
+      out.textContent = `O número ${num} tem ${qtd} dígito(s).`;
+    });
+  </script>
+</body>
+
+</html>
