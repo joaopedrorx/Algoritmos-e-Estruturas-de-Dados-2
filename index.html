@@ -45,13 +45,19 @@
                 return;
             }
 
-            const novo_produto = {
-                nome: nome,
-                preco: preco,
-                quantidade: quantidade
-            };
-            produtos.push(novo_produto);
-            alert(`Produto '${nome}' adicionado com sucesso!`);
+            const confirmar = confirm(`Deseja incluir o produto '${nome}' por R$ ${preco.toFixed(2)} com ${quantidade} unidades?`);
+
+            if (confirmar) {
+                const novo_produto = {
+                    nome: nome,
+                    preco: preco,
+                    quantidade: quantidade
+                };
+                produtos.push(novo_produto);
+                alert(`Produto '${nome}' adicionado com sucesso!`);
+            } else {
+                alert("Inclusão cancelada.");
+            }
         }
 
         function listar_produtos() {
