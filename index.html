@@ -8,7 +8,13 @@
 <body>
 
     <h1>Gestão de Produtos</h1>
+    <br>
+    <h2>Programa de Controle de Estoque de Produtos, parte do trabalho de Algoritmos e Estruturas de Dados II</h2>
+    <br>
+    <br>
     <p>Abra o console do desenvolvedor (F12) para ver a execução do programa.</p>
+    <br>
+    <p>Pressione F5 para reiniciar o programa.</p>
 
     <script>
         const produtos = [];
@@ -26,7 +32,8 @@
                 return;
             }
 
-            const preco = parseFloat(prompt("Preço unitário (R$):"));
+            const precoStr = prompt("Preço unitário (R$):");
+            const preco = parseFloat(precoStr.replace(',', '.'));
             if (isNaN(preco) || preco < 0) {
                 alert("Erro: Preço inválido.");
                 return;
@@ -87,23 +94,40 @@
 
                 if (confirmar) {
                     produtos.splice(indice_encontrado, 1);
-                    alert(`Produto '${nome_remover}' removido com sucesso.`);
+                    alert(`Produto \'${nome_remover}\' removido com sucesso.`);
                 } else {
                     alert("Remoção cancelada.");
                 }
             } else {
-                alert(`Erro: Produto com o nome '${nome_remover}' não encontrado.`);
+                alert(`Erro: Produto com o nome \'${nome_remover}\' não encontrado.`);
+            }
+        }
+
+        function remover_todos_produtos() {
+            if (produtos.length === 0) {
+                alert("Nenhum produto cadastrado para remover.");
+                return;
+            }
+
+            const confirmar = confirm(`Tem certeza que deseja remover TODOS os ${produtos.length} produtos? Esta ação não pode ser desfeita.`);
+
+            if (confirmar) {
+                produtos.length = 0; // Esvazia o array
+                alert("Todos os produtos foram removidos com sucesso.");
+            } else {
+                alert("Remoção cancelada.");
             }
         }
 
         function main() {
             while (true) {
                 const opcao = prompt(
-                    "--- GERENCIADOR DE ESTOQUE ---\n" +
-                    "1 - Incluir novo produto\n" +
-                    "2 - Listar produtos cadastrados\n" +
-                    "3 - Remover produto\n" +
-                    "4 - Sair do programa\n" +
+                    "--- GERENCIADOR DE ESTOQUE ---\n\n" +
+                    "  1 - Incluir novo produto\n" +
+                    "  2 - Listar produtos cadastrados\n" +
+                    "  3 - Remover produto\n" +
+                    "  4 - Sair do programa\n\n" +
+                    "---------------------------------\n" +
                     "Escolha uma opção (1-4):"
                 );
 
@@ -112,7 +136,25 @@
                 } else if (opcao === '2') {
                     listar_produtos();
                 } else if (opcao === '3') {
-                    remover_produto();
+                    const sub_opcao = prompt(
+                        "--- REMOVER PRODUTO ---\
+\n" +
+                        "  1 - Remover um produto específico\
+" +
+                        "  2 - Remover TODOS os produtos\
+\n" +
+                        "--------------------------\
+" +
+                        "Escolha uma opção (1-2):"
+                    );
+
+                    if (sub_opcao === '1') {
+                        remover_produto();
+                    } else if (sub_opcao === '2') {
+                        remover_todos_produtos();
+                    } else {
+                        alert("Opção de remoção inválida.");
+                    }
                 } else if (opcao === '4') {
                     alert("Saindo do programa... Até logo!");
                     break;
